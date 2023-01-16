@@ -24,12 +24,6 @@
     "phone": "(692) 802-2949"
   },
   {
-    "id": "5",
-    "name": "Cyrus Jackson",
-    "email": "nibh@semsempererat.com",
-    "phone": "(501) 472-5218"
-  },
-  {
     "id": "6",
     "name": "Abbot Franks",
     "email": "scelerisque@magnis.org",
@@ -58,5 +52,11 @@
     "name": "Alec Howard",
     "email": "Donec.elementum@scelerisquescelerisquedui.net",
     "phone": "(748) 206-2688"
+  },
+  {
+    "name": "Nikita",
+    "email": "dshlyakhovaya1992@gmail.com",
+    "phone": "0936728903",
+    "id": "8ae01109-1a9b-4cd7-84d9-95e6605a3920"
   }
 ]
