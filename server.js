@@ -1,7 +1,20 @@
+const mongoose = require("mongoose");
 const app = require("./app");
+mongoose.set("strictQuery", true);
 
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-  console.log(`Server running. Use our API on port: ${PORT}`);
-});
+const DB = process.env.MONGO_URL;
+const Port = process.env.PORT;
+console.log(DB);
+mongoose
+  .connect(DB, {
+    usenewurlparser: true,
+    useunifiedtopology: true,
+  })
+  .then(() => {
+    app.listen(Port);
+    console.log("Successfully connected ");
+  })
+  .catch((error) => {
+    console.log(`can not connect to database, ${error}`);
+    process.exit(1);
+  });
