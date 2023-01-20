@@ -12,7 +12,7 @@ mongoose
   })
   .then(() => {
     app.listen(Port);
-    console.log("Successfully connected ");
+    console.log(`Server running. Use our API on port: ${Port}`);
   })
   .catch((error) => {
     console.log(`can not connect to database, ${error}`);
