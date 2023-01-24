@@ -4,7 +4,6 @@ mongoose.set("strictQuery", true);
 
 const DB = process.env.MONGO_URL;
 const Port = process.env.PORT;
-console.log(DB);
 mongoose
   .connect(DB, {
     usenewurlparser: true,
