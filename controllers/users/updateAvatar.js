@@ -2,8 +2,9 @@ const Jimp = require("jimp");
 const { User } = require("../../models");
 const path = require("path");
 const fs = require("fs/promises");
+const { NotFound } = require("http-errors");
 
-const avatarіDir = path.join(__dirname, "../../", "public", "avatars");
+const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
 
 const changeAvatar = async (path) => {
   const avatar = Jimp.read(path);
@@ -12,20 +13,28 @@ const changeAvatar = async (path) => {
     .contain(Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
 };
 
-const updateAvatar = async (req, res) => {
-  const { path: tempUpload, originalname } = req.file;
-  const { _id: id } = req.user;
-  const imageName = `${id}_${originalname}`;
+const updateAvatar = async (req, res, next) => {
   try {
-    const resultUpload = path.join(avatarіDir, imageName);
+    if (!req.file) {
+      throw new NotFound(400, "Bad Request. Please add your avatar image.");
+    }
+    const { path: tempUpload, filename } = req.file;
+    const { _id } = req.user;
+    const [extention] = filename.split(".").reverse();
+    const newFileName = `${_id}.${extention}`;
+    const resultUpload = path.join(avatarsDir, newFileName);
     await fs.rename(tempUpload, resultUpload);
-    const avatarURL = path.join("public", "avatars", imageName);
-    await User.findByIdAndUpdate(req.user._id, { avatarURL });
+    const avatarURL = path.join("avatars", newFileName);
+    await User.findByIdAndUpdate(_id, { avatarURL });
     changeAvatar(avatarURL);
-    res.json({ avatarURL });
+    res.json({
+      avatarURL,
+    });
   } catch (error) {
-    await fs.unlink(tempUpload);
-    throw error;
+    if (req.file) {
+      await fs.unlink(req.file.tempUpload);
+    }
+    next(error);
   }
 };
 
