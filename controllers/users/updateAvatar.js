@@ -6,11 +6,18 @@ const { NotFound } = require("http-errors");
 
 const avatarsDir = path.join(__dirname, "../../", "public", "avatars");
 
-const changeAvatar = async (path) => {
+const transformAvatar = async (path) => {
   const avatar = Jimp.read(path);
-  await avatar
-    .resize(250, 250)
-    .contain(Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE);
+  await (
+    await avatar
+  )
+    .autocrop()
+    .contain(
+      250,
+      250,
+      Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE
+    )
+    .writeAsync(path);
 };
 
 const updateAvatar = async (req, res, next) => {
@@ -25,8 +32,9 @@ const updateAvatar = async (req, res, next) => {
     const resultUpload = path.join(avatarsDir, newFileName);
     await fs.rename(tempUpload, resultUpload);
     const avatarURL = path.join("avatars", newFileName);
+    console.log(avatarURL);
     await User.findByIdAndUpdate(_id, { avatarURL });
-    changeAvatar(avatarURL);
+    transformAvatar(avatarURL);
     res.json({
       avatarURL,
     });
